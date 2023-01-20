@@ -23,6 +23,6 @@ ul {
 }
 
 .progress {
-  display: flex;
+  display: fle x;
   flex-direction: row;
 }
