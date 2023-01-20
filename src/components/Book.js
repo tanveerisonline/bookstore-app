@@ -1,36 +1,35 @@
-import PropTypes from 'prop-types';
+import React from 'react';
+import Proptypes from 'prop-types';
 
-const Book = ({
-  category, title, author, currentChapter,
-}) => (
-  <div className="book-container">
-    <div className="book-info">
-      <h3 className="book-category">{category}</h3>
-      <h2 className="book-title">
-        {' '}
-        {title}
-      </h2>
-      <h4 className="book-author">{author}</h4>
-      <div className="options">
-        <button type="button">Comments</button>
-        <button type="button">Remove</button>
-        <button type="button">Edit</button>
+export default function Book({ book }) {
+  return (
+    <div className="bookCard">
+      <div className="bookInfo">
+        <p className="genre">{book.genre}</p>
+        <p className="title">{book.title}</p>
+        <p className="author">{book.author}</p>
+        <ul>
+          <li><button type="button">Comments</button></li>
+          <li><button type="button">Remove</button></li>
+          <li><button type="button">Edit</button></li>
+        </ul>
+      </div>
+      <div className="progress">
+        <div>
+          <div>chart</div>
+          <p>percentage</p>
+        </div>
+        <div>
+          <p>{book.status}</p>
+          <p>{book.currentChapter}</p>
+          <p>{book.chapterNumber}</p>
+          <button type="button">Update progress</button>
+        </div>
       </div>
     </div>
-    <div className="book-progress">
-      <div className="progress" />
-      <div className="current-chapter">Current Chapter</div>
-      <div className="book-chapter">{currentChapter}</div>
-      <button type="button">Update progress</button>
-    </div>
-  </div>
-);
+  );
+}
 
 Book.propTypes = {
-  title: PropTypes.string.isRequired,
-  author: PropTypes.string.isRequired,
-  category: PropTypes.string.isRequired,
-  currentChapter: PropTypes.number.isRequired,
+  book: Proptypes.objectOf(Proptypes.string).isRequired,
 };
-
-export default Book;
