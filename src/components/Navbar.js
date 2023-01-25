@@ -12,6 +12,7 @@ export default function NavBar() {
           <li><Link to="/categories">Categories</Link></li>
         </ul>
       </div>
+      <img src="https://img.icons8.com/external-anggara-outline-color-anggara-putra/32/000000/external-avatar-interface-anggara-outline-color-anggara-putra.png" alt="profile" />
     </nav>
   );
 }
