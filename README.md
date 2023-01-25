@@ -66,6 +66,8 @@
 > This project is using best practices with React and JavaScript.
 > This project follows the gitflow convention.
 > This is using eslint and stylelint to check errors.
+> This project is using Github Actions to check linters errors.
+> This project is using react-redux to manage state.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
