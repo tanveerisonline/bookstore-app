@@ -6,8 +6,7 @@ export default function categoriesReducer(state = [], action = {}) {
   switch (action.type) {
     case CHECKSTATUS:
       return 'Under construction';
-    default:
-      return state;
+    default: return state;
   }
 }
 
@@ -15,6 +14,6 @@ export default function categoriesReducer(state = [], action = {}) {
 export function checkStatus(id) {
   return {
     type: CHECKSTATUS,
-    payload: id,
+    payload: { id },
   };
 }
