@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-export default function NavBar() {
+export default function Navbar() {
   return (
     <nav>
       <div className="mainNav">
