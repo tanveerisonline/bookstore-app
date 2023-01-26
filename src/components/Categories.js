@@ -1,14 +1,30 @@
-import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { PropTypes } from 'prop-types';
+import { useDispatch } from 'react-redux';
 import { checkStatus } from '../redux/categories/categories';
+import styles from './Categories.module.css';
 
-export default function Categories() {
+const Categories = ({ Categories }) => {
   const dispatch = useDispatch();
-  const currentStatus = useSelector((state) => state.categoriesReducer);
+
+  const check = () => {
+    dispatch(checkStatus());
+  };
+
   return (
     <>
-      <button type="button" onClick={() => dispatch(checkStatus())}>Check status</button>
-      {currentStatus}
+      <main className={styles.categories}>
+        <p>
+          {Categories}
+        </p>
+        <button type="button" onClick={() => check()}>Check status</button>
+      </main>
     </>
+
   );
-}
+};
+
+Categories.propTypes = {
+  Categories: PropTypes.instanceOf(Array).isRequired,
+};
+
+export default Categories;

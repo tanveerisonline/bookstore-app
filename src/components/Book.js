@@ -1,38 +1,36 @@
-import React from 'react';
-import Proptypes from 'prop-types';
+/* eslint-disable camelcase */
+import { PropTypes } from 'prop-types';
 import { useDispatch } from 'react-redux';
-import { del } from '../redux/books/books';
+import { deleteBook } from '../redux/books/books';
+import styles from './Book.module.css';
 
-export default function Book({ book }) {
+const Book = (props) => {
+  const { item_id, title, author } = props;
   const dispatch = useDispatch();
+
+  const handleRemoveBook = () => {
+    dispatch(deleteBook(item_id));
+  };
+
   return (
-    <div className="bookCard">
-      <div className="bookInfo">
-        <p className="genre">{book.genre}</p>
-        <p className="title">{book.title}</p>
-        <p className="author">{book.author}</p>
-        <ul>
-          <li><button type="button">Comments</button></li>
-          <li><button type="button" onClick={() => dispatch(del(book.id))}>Remove</button></li>
-          <li><button type="button">Edit</button></li>
-        </ul>
+    <div className={styles.book}>
+      <div>
+        <h2>
+          {title}
+        </h2>
+        <h3>
+          {author}
+        </h3>
       </div>
-      <div className="progress">
-        <div>
-          <div>chart</div>
-          <p>percentage</p>
-        </div>
-        <div>
-          <p>{book.status}</p>
-          <p>{book.currentChapter}</p>
-          <p>{book.chapterNumber}</p>
-          <button type="button">Update progress</button>
-        </div>
-      </div>
+      <button className={styles.removeBtn} type="button" onClick={handleRemoveBook}>Delete</button>
     </div>
   );
-}
+};
 
 Book.propTypes = {
-  book: Proptypes.objectOf(Proptypes.string).isRequired,
+  item_id: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
+  author: PropTypes.string.isRequired,
 };
+
+export default Book;
