@@ -1,32 +1,33 @@
-import { PropTypes } from 'prop-types';
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import AddNewBook from './AddNewBook';
 import Book from './Book';
-import NewBook from './NewBook';
-import styles from './Books.module.css';
+import { fetchBooksList } from '../redux/books/books';
 
-const Books = (props) => {
-  const { BookList } = props;
+const Books = () => {
+  const dispatch = useDispatch();
+  const { books } = useSelector((state) => state);
+  const { booksList } = books;
+  const entries = Object.entries(booksList);
+
+  useEffect(() => {
+    if (Object.keys(booksList).length === 0) dispatch(fetchBooksList());
+  }, [dispatch, booksList]);
+
+  useEffect(() => {
+    console.log(books);
+    if (books.loading === 'fin') dispatch(fetchBooksList());
+  }, [books.msg]);
 
   return (
-    <>
-      <main>
-        <div className={styles.bookList}>
-          {BookList.map((book) => (
-            <Book
-              key={book.item_id}
-              author={book.author}
-              title={book.title}
-              item_id={book.item_id}
-            />
-          ))}
-        </div>
-        <NewBook />
-      </main>
-    </>
+    <div>
+      <ul className="books">
+        {entries.map((entry) => <li key={entry[0]}><Book entry={entry} /></li>)}
+      </ul>
+      <div className="horizontal-divider" />
+      <AddNewBook />
+    </div>
   );
-};
-
-Books.propTypes = {
-  BookList: PropTypes.instanceOf(Array).isRequired,
 };
 
 export default Books;

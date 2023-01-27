@@ -1,96 +1,131 @@
-/* eslint-disable camelcase */
-const URL = 'https://us-central1-bookstore-api-e63c8.cloudfunctions.net/bookstoreApi/apps/ewYk4YjZVq8pYtMAfktj/books';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { getBooks, addBooks, delBooks } from '../../api/Api';
 
-// action types
-const ADD = 'BOOK_ADDED';
-const REMOVE = 'BOOK_REMOVED';
-const READ = 'BOOKS_RETRIEVED';
-
-// Action creators
-export const addBook = ({
-  item_id, title, author, category,
-}) => ({
-  type: ADD,
-  item_id,
-  title,
-  author,
-  category,
-});
-
-export const removeBook = (item_id) => ({
-  type: REMOVE,
-  item_id,
-});
-
-export const readBooks = (books) => ({
-  type: READ,
-  books,
-});
-
-const getFromAction = ({
-  item_id, title, author, category,
-}) => ({
-  item_id, title, author, category,
-});
-
-const booksReducer = (state = [], action) => {
-  switch (action.type) {
-    case ADD:
-      return [
-        ...state,
-        getFromAction(action),
-      ];
-    case REMOVE:
-      return state.filter((book) => book.item_id !== action.item_id);
-
-    case READ:
-      return action.books;
-
-    default:
-      return state;
-  }
+const loadFromLocalStorage = () => {
+  const serializedStore = window.localStorage.getItem('store');
+  if (serializedStore === null) return undefined;
+  return JSON.parse(serializedStore);
 };
 
-export const fetchBooks = () => async (dispatch) => {
-  await fetch(URL)
-    .then((res) => res.json())
-    .then((books) => {
-      const BookList = [];
-      Object.keys(books).forEach((key) => {
-        BookList.push({
-          item_id: key,
-          title: books[key][0].title,
-          author: books[key][0].author,
-          category: books[key][0].category,
-        });
-      });
-      dispatch(readBooks(BookList));
-    });
+const extractBooks = () => {
+  const storage = loadFromLocalStorage();
+  return storage ? storage.books.booksList : {};
 };
 
-export const postBook = (book) => async (dispatch) => {
-  await fetch(URL, {
-    method: 'POST',
-    body: JSON.stringify(book),
-    headers: {
-      'Content-type': 'application/json; charset=UTF-8',
+const initialState = {
+  booksList: extractBooks(),
+  msg: '',
+  currentRequestId: '',
+  loading: 'fin',
+  error: '',
+};
+
+// Actions
+const FETCH_BOOK = 'bookstore/books/FETCH_BOOK';
+const ADD_BOOK = 'bookstore/books/ADD_BOOK';
+const REMOVE_BOOK = 'bookstore/books/REMOVE_BOOK';
+
+export const fetchBooksList = createAsyncThunk(
+  FETCH_BOOK,
+  async (_, { rejectWithValue }) => {
+    try {
+      const resp = await getBooks();
+      return resp;
+    } catch (err) {
+      return rejectWithValue([], err);
+    }
+  },
+);
+
+export const addBooksList = createAsyncThunk(
+  ADD_BOOK,
+  async (book, { rejectWithValue }) => {
+    try {
+      const resp = await addBooks(book);
+      return resp;
+    } catch (err) {
+      return rejectWithValue([], err);
+    }
+  },
+);
+
+export const delBooksList = createAsyncThunk(
+  REMOVE_BOOK,
+  async (bookID, { rejectWithValue }) => {
+    try {
+      const resp = await delBooks(bookID);
+      return resp;
+    } catch (err) {
+      return rejectWithValue([], err);
+    }
+  },
+);
+
+// Reducer
+const { reducer } = createSlice({
+  name: 'books',
+  initialState,
+  reducers: {},
+  extraReducers: {
+    [fetchBooksList.fulfilled]: (state, { meta, payload }) => {
+      if (meta.requestId === state.currentRequestId.requestId) {
+        state.booksList = payload;
+        state.loading = 'fin';
+        state.currentRequestId = '';
+      }
     },
-  })
-    .then(() => {
-      dispatch(addBook(book));
-    });
-};
-
-export const deleteBook = (id) => async (dispatch) => {
-  await fetch(`${URL}/${id}`, {
-    method: 'DELETE',
-    headers: {
-      'Content-type': 'application/json; charset=UTF-8',
+    [fetchBooksList.pending]: (state, { meta }) => {
+      state.currentRequestId = meta;
+      state.loading = 'pending';
     },
-  })
-    .then(() => {
-      dispatch(removeBook(id));
-    });
-};
+    [fetchBooksList.rejected]: (state, { meta, payload, error }) => {
+      if (state.currentRequestId === meta) {
+        state.currentRequestId = meta;
+        state.loading = 'fin';
+        state.booksList = payload;
+        state.error = error;
+      }
+    },
+    [addBooksList.fulfilled]: (state, { meta, payload }) => {
+      if (meta.requestId === state.currentRequestId.requestId) {
+        state.msg = 'New Book Added';
+        state.resp = payload;
+        state.loading = 'fin';
+        state.currentRequestId = '';
+      }
+    },
+    [addBooksList.pending]: (state, { meta }) => {
+      state.currentRequestId = meta;
+      state.loading = 'pending';
+    },
+    [addBooksList.rejected]: (state, { meta, payload, error }) => {
+      if (state.currentRequestId === meta) {
+        state.currentRequestId = meta;
+        state.loading = 'fin';
+        state.msg = payload;
+        state.error = error;
+      }
+    },
+    [delBooksList.fulfilled]: (state, { meta, payload }) => {
+      if (meta.requestId === state.currentRequestId.requestId) {
+        state.msg = payload;
+        state.loading = 'fin';
+        state.currentRequestId = '';
+      }
+    },
+    [delBooksList.pending]: (state, { meta }) => {
+      state.currentRequestId = meta;
+      state.loading = 'pending';
+    },
+    [delBooksList.rejected]: (state, { meta, payload, error }) => {
+      if (state.currentRequestId === meta) {
+        state.currentRequestId = meta;
+        state.loading = 'fin';
+        state.msg = payload;
+        state.error = error;
+      }
+    },
+  },
+});
 
-export default booksReducer;
+export default reducer;
