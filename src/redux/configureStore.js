@@ -1,11 +1,14 @@
-import { createStore, combineReducers } from 'redux';
-import booksReducer from './books/books';
-import categoriesReducer from './categories/categories';
+import { configureStore } from '@reduxjs/toolkit';
+import booksSlice from './books/books';
+import categoriesSlice from './categories/categories';
 
-const reducer = combineReducers({
-  booksReducer,
-  categoriesReducer,
+function saveToLocalStorage(store) {
+  const serializedStore = JSON.stringify(store);
+  window.localStorage.setItem('store', serializedStore);
+}
+
+const store = configureStore({
+  reducer: { books: booksSlice, categories: categoriesSlice },
 });
-
-const configureStore = createStore(reducer);
-export default configureStore;
+store.subscribe(() => saveToLocalStorage(store.getState()));
+export default store;
