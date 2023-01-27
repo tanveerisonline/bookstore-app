@@ -115,14 +115,12 @@ a {
   gap: 0.938rem;
 }
 
-
 .book {
   background-color: #fff;
   border-radius: 4px;
   border: 1px solid #e8e8e8;
   padding: 2rem;
 }
-
 
 .book-content {
   display: flex;
@@ -333,4 +331,3 @@ a {
   text-transform: capitalize;
   font-weight: 900;
 }
-
