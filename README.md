@@ -75,7 +75,6 @@
 
 ## 🚀 Live Demo <a href="https://bookstore-902w.onrender.com">Live Link</a>
 
-> Soon you will find a live demo link here:
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
