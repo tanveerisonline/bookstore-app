@@ -15,6 +15,7 @@ const Books = () => {
   }, [dispatch, booksList]);
 
   useEffect(() => {
+    console.log(books);
     if (books.loading === 'fin') dispatch(fetchBooksList());
   }, [books.msg]);
 
