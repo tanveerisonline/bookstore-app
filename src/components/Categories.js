@@ -1,30 +1,23 @@
-import { PropTypes } from 'prop-types';
-import { useDispatch } from 'react-redux';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { checkStatus } from '../redux/categories/categories';
-import styles from './Categories.module.css';
 
-const Categories = ({ Categories }) => {
+const Categories = () => {
   const dispatch = useDispatch();
+  const categories = useSelector((state) => state.categories);
 
-  const check = () => {
+  const checkState = () => {
     dispatch(checkStatus());
   };
 
   return (
     <>
-      <main className={styles.categories}>
-        <p>
-          {Categories}
-        </p>
-        <button type="button" onClick={() => check()}>Check status</button>
-      </main>
+      <div className="category"><span>{categories}</span></div>
+      <div>
+        <button className="primary-button" type="button" onClick={() => checkState()}>Check status</button>
+      </div>
     </>
-
   );
-};
-
-Categories.propTypes = {
-  Categories: PropTypes.instanceOf(Array).isRequired,
 };
 
 export default Categories;

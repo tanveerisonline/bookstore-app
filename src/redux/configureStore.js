@@ -1,12 +1,14 @@
 import { configureStore } from '@reduxjs/toolkit';
-import checkStatusReducer from './categories/categories';
-import booksReducer from './books/books';
+import booksSlice from './books/books';
+import categoriesSlice from './categories/categories';
 
-const bookStore = configureStore({
-  reducer: {
-    categories: checkStatusReducer,
-    books: booksReducer,
-  },
+function saveToLocalStorage(store) {
+  const serializedStore = JSON.stringify(store);
+  window.localStorage.setItem('store', serializedStore);
+}
+
+const store = configureStore({
+  reducer: { books: booksSlice, categories: categoriesSlice },
 });
-
-export default bookStore;
+store.subscribe(() => saveToLocalStorage(store.getState()));
+export default store;

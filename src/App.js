@@ -1,35 +1,31 @@
-import React, { useEffect } from 'react';
+/* eslint-disable import/no-unresolved */
+/* eslint-disable import/extensions */
+/* eslint-disable no-unused-vars */
+import React from 'react';
 import {
   BrowserRouter as Router,
   Routes,
   Route,
 } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import { Provider } from 'react-redux';
+import Navbar from './components/Navbar';
+import BooksPage from './containers/BooksPage.jsx';
+import Categories from './containers/Categories';
+import store from './redux/createState';
+import './index.css';
 
-import Books from './components/Books';
-import Categories from './components/Categories';
-import Header from './components/Header';
-import styles from './App.module.css';
-import { fetchBooks } from './redux/books/books';
-
-const App = () => {
-  const state = useSelector((state) => state);
-  const dispatch = useDispatch();
-  useEffect(() => async () => {
-    await dispatch(fetchBooks());
-  }, [dispatch]);
-
-  return (
-    <div className={styles.app}>
-      <Router>
-        <Header />
+const App = () => (
+  <Provider store={store}>
+    <Router>
+      <div className="container">
+        <Navbar />
         <Routes>
-          <Route path="/" element={<Books BookList={state.books} />} />
-          <Route path="/categories" element={<Categories Categories={state.categories} />} />
+          <Route path="/categories" element={<Categories />} />
+          <Route exact path="/" element={<BooksPage />} />
         </Routes>
-      </Router>
-    </div>
-  );
-};
+      </div>
+    </Router>
+  </Provider>
+);
 
 export default App;
